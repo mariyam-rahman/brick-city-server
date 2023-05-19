@@ -2,6 +2,7 @@ const express = require("express");
 const client = require("./db.connect");
 const cors = require("cors");
 const app = express();
+const { ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
 const dotEnv = require("dotenv");
 dotEnv.config();
@@ -49,9 +50,21 @@ app.post("/product", async (req, res) => {
   res.send("create product");
 });
 
-app.put("/product/:id", (req, res) => {
+app.put("/product/:id", async (req, res) => {
   // check if the product.seller == loggedInUser.id
-  res.send("update the product");
+
+  const result = await toyCollection.updateOne(
+    { _id: new ObjectId(req.params.id) },
+    { $set: { ...req.body } }
+  );
+  res.send(req.body);
+});
+
+app.delete("/product/:id", async (req, res) => {
+  const result = await toyCollection.deleteOne({
+    _id: new ObjectId(req.params.id),
+  });
+  res.send(result);
 });
 
 app.listen(port, () => {
