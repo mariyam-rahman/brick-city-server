@@ -26,7 +26,10 @@ app.get("/products", async (req, res) => {
   if (sellerEmail) {
     cursor = toyCollection.find({ sellerEmail });
   } else {
-    cursor = toyCollection.find();
+    cursor = toyCollection
+      .find()
+      .skip(Number(per_page) * (Number(page) - 1))
+      .limit(Number(per_page));
   }
   const result = await cursor.toArray();
 
@@ -54,6 +57,7 @@ app.post("/product", async (req, res) => {
     sellerName,
     category,
   };
+
   const result = await client
     .db("brick-city")
     .collection("products")
