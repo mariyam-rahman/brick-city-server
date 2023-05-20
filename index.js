@@ -1,11 +1,11 @@
+// console.log(process.env);
 const express = require("express");
+require("dotenv").config();
 const client = require("./db.connect");
 const cors = require("cors");
 const app = express();
 const { ObjectId } = require("mongodb");
 const port = process.env.PORT || 5000;
-const dotEnv = require("dotenv");
-dotEnv.config();
 // middleware
 // const dbConnect = require("./db.connect");
 // dbConnect();
@@ -79,7 +79,7 @@ app.post("/product", async (req, res) => {
 
 app.put("/product/:id", async (req, res) => {
   // check if the product.seller == loggedInUser.id
-
+  console.log("================");
   const result = await toyCollection.updateOne(
     { _id: new ObjectId(req.params.id) },
     { $set: { ...req.body } }
@@ -97,3 +97,5 @@ app.delete("/product/:id", async (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+// toyCollection.insertMany(toys);
