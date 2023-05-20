@@ -13,13 +13,14 @@ dotEnv.config();
 app.use(cors());
 app.use(express.json());
 
-// const myColl = client.db("brick-city").collection("products");
+app.get("/", (req, res) => {
+  res.send("working");
+});
 
 // ---product---
 const toyCollection = client.db("brick-city").collection("products");
 
 app.get("/products", async (req, res) => {
-  //   give me all products where {category:1}
   const { per_page = 20, page = 1, sellerEmail } = req.query;
   let cursor;
   if (sellerEmail) {
@@ -33,8 +34,16 @@ app.get("/products", async (req, res) => {
 });
 
 app.post("/product", async (req, res) => {
-  const { name, price, stock, description, imageUrl, sellerEmail, sellerName } =
-    req.body;
+  const {
+    name,
+    price,
+    stock,
+    description,
+    imageUrl,
+    sellerEmail,
+    sellerName,
+    category,
+  } = req.body;
   const productObj = {
     name,
     price,
@@ -43,6 +52,7 @@ app.post("/product", async (req, res) => {
     imageUrl,
     sellerEmail,
     sellerName,
+    category,
   };
   const result = await client
     .db("brick-city")
