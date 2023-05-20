@@ -21,15 +21,23 @@ app.get("/", (req, res) => {
 const toyCollection = client.db("brick-city").collection("products");
 
 app.get("/products", async (req, res) => {
-  const { per_page = 20, page = 1, sellerEmail } = req.query;
+  const { per_page = 20, page = 1, sellerEmail, order } = req.query;
   let cursor;
   if (sellerEmail) {
     cursor = toyCollection.find({ sellerEmail });
   } else {
-    cursor = toyCollection
-      .find()
-      .skip(Number(per_page) * (Number(page) - 1))
-      .limit(Number(per_page));
+    if (order) {
+      cursor = toyCollection
+        .find()
+        .sort({ price: order == "desc" ? -1 : 1 })
+        .skip(Number(per_page) * (Number(page) - 1))
+        .limit(Number(per_page));
+    } else {
+      cursor = toyCollection
+        .find()
+        .skip(Number(per_page) * (Number(page) - 1))
+        .limit(Number(per_page));
+    }
   }
   const result = await cursor.toArray();
 
